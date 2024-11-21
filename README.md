@@ -15,7 +15,7 @@ transformers 4.30.2
 # Install and set up
 **1.** Clone this repository
 
-`git clonehttps://github.com/WeiLab-Biology/MC-GNNPsite.git` or download the code in ZIP archive. The latest version is `MC-GNNPsite-main`.  
+`git clone https://github.com/boqing188142449/MC-GNNPsite.git` or download the code in ZIP archive. The latest version is `MC-GNNPsite-master`.  
 
 **2.** Convert the protein txt file into  protein folders:
 
