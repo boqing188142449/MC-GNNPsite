@@ -6,12 +6,11 @@ import torch.optim as optim
 import torch.nn as nn
 from torch_geometric.data import DataLoader
 from sklearn.model_selection import StratifiedKFold
-from Utils.get_dataset import GetDataset
+from Utils.GetDataset import GetDataset
 from sklearn.metrics import roc_auc_score, average_precision_score, matthews_corrcoef
 import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 from Model.GNN import CombinedGNN
-
 
 def Seed_everything(seed=42):
     torch.cuda.manual_seed(seed)
@@ -21,7 +20,6 @@ def Seed_everything(seed=42):
     cudnn.deterministic = True
     cudnn.benchmark = False
 
-
 def Metric(preds, labels):
     labels = np.array(labels).reshape(-1)
     preds = np.array(preds).reshape(-1)
@@ -29,7 +27,6 @@ def Metric(preds, labels):
     AUC = roc_auc_score(labels, preds)
     AUPRC = average_precision_score(labels, preds)
     return AUC, AUPRC, mcc
-
 
 def train_epoch(model, optimizer, train_loader, criterion, device, epoch):
     print('Training on {} samples...'.format(len(train_loader.dataset)))
@@ -54,7 +51,6 @@ def train_epoch(model, optimizer, train_loader, criterion, device, epoch):
     print("Epoch {}: train_auc: {:.6f}, train_auprc: {:.6f} , MCC: {:.6f}\n".format(epoch + 1, metrics[0], metrics[1],
                                                                                     metrics[2]))
 
-
 def validate(model, val_loader, device):
     print('Validating on {} samples...'.format(len(val_loader.dataset)))
     model.eval()
@@ -71,7 +67,6 @@ def validate(model, val_loader, device):
     valid_Y = np.concatenate(valid_Y)
     valid_metric = Metric(valid_preds, valid_Y)
     return valid_metric
-
 
 # Set data path
 root = r'/media/2t/zhangzhi/Project01/Dataset/Protein/Train_DBSRP'
@@ -135,7 +130,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_list, labels)):
     for epoch in range(NUM_EPOCHS):
         train_epoch(model, optimizer, train_loader, criterion, device, epoch + 1)
         AUC, AUPRC, MCC = validate(model, val_loader, device)
-        print("Epoch {}:  AUC: {:.6f}, AUPRC: {:.6f}, MCC: {:.6f}\n".format(epoch + 1, AUC, AUPRC, MCC))
+        print("Epoch {}:  AUC: {:.3f}, AUPRC: {:.3f}, MCC: {:.3f}\n".format(epoch + 1, AUC, AUPRC, MCC))
 
         if AUPRC >= best_auprc:
             not_improve_epochs = 0
@@ -143,10 +138,10 @@ for fold, (train_index, val_index) in enumerate(kf.split(data_list, labels)):
             best_auprc = AUPRC
             best_epoch = epoch + 1
             torch.save(model.state_dict(), f'./output_pt/best_model_fold{fold + 1}.pt')
-            print('Improved AUPRC at epoch {}, best AUPRC: {:.6f}, AUC: {:.6f}\n'.format(best_epoch, AUPRC, AUC))
+            print('Improved AUPRC at epoch {}, best AUPRC: {:.3f}, AUC: {:.3f}\n'.format(best_epoch, AUPRC, AUC))
         else:
             not_improve_epochs += 1
-            print('Epoch {}: AUPRC did not improve, best AUPRC: {:.6f}, AUC: {:.6f}\n'.format(best_epoch, best_auprc,
+            print('Epoch {}: AUPRC did not improve, best AUPRC: {:.3f}, AUC: {:.3f}\n'.format(best_epoch, best_auprc,
                                                                                               val_auc))
             if not_improve_epochs >= stop_count:
                 print("Early stopping at epoch {}".format(epoch + 1))
