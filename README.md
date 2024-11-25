@@ -79,7 +79,7 @@ python ./test.py
 # Datasets and models
 
 The datasets used in this study are stored in `./datasets/`  
-The trained MC-GNNPsite models can be found in `./Output_pt/`
+The trained MC-GNNPsite models can be found in `https://drive.google.com/drive/folders/1cv2mJY6Dnv3tArQ2r4Y-aUHR6Qk-fGtl?usp=sharing`
 
 # Citation and contact
 ```
